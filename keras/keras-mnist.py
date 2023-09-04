@@ -1,3 +1,5 @@
+# NOTE: Be sure to run rm -rf logs to clear the TensorBoard logs first
+
 import numpy 
 numpy.random.seed(1337)   # for experiment reproducibility 
 
@@ -7,9 +9,14 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense 
 from tensorflow.keras.optimizers.legacy import SGD 
 
+import datetime
+log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+print('Log Dir', log_dir)
+tensorboard_callback = tensorflow.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
 num_classes = 10 # we are going to train for digits 0 to 9. Therefore, we need 10 classes
 
-batch_size = 128 # 128 data points will be sent to the network at a time for batch processing
+batch_size = 128 # 128 data points will be read at a time for batch processing
 epochs = 25 # the number of iterations (the number of times the data is fed to the machine for additional, incremental learning). You may want to use 20+ in production.
 
 # the data, shuffled and split between train and test sets
@@ -72,9 +79,11 @@ history = model.fit( x_train, y_train,
            batch_size=batch_size,
            epochs=epochs, 
            verbose=1, 
-           validation_data=(x_test, y_test))
+           validation_data=(x_test, y_test),
+           callbacks=[tensorboard_callback])
 
 # Let's evaluate the model 
 score = model.evaluate(x_test, y_test)
+print(f'Loss: {score[0]}\nAccuracy: {score[1]}')
 
-print('The score', score[1])
+# View results with TensorBoard: tensorboard --logdir logs/fit
