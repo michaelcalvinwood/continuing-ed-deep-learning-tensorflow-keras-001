@@ -44,13 +44,21 @@ print(x_train[0]) # notice all the data values are now between 0 to 1
 
 # after normalizing the data (x), we now need to transform the labels (y) in class matrixes
 
-# convert class vectors to binary class matrices 
-# e.g. where a label matching class 2 is: (0, 0, 1, 0, 0, 0, 0, 0, 0, 0) 
+# convert class vectors to binary class matrices (i.e. one-hot vectors)
+# e.g. a label matching class 2 is: (0, 0, 1, 0, 0, 0, 0, 0, 0, 0) 
 # since we have ten classes we need 9 zeros and one 1 per row to signify true/false for each possible class
 print('y before transformation', y_train[0])
 y_train = tensorflow.keras.utils.to_categorical(y_train, num_classes)
 y_test = tensorflow.keras.utils.to_categorical(y_test, num_classes)
 print('y after transformation', y_train[0]) # this is called a one-hot vector
 
+# create a Sequential model with three hidden layers with the final layer returning the softmax value (the maximum value)
+# input -> Dense Layer 1 -> Dense Layer 2 -> Dense Layer 3 -> Ouput (softmax value)
+model = Sequential()
+# note: we must use the comma (784,) so the input data is treated as a tuple
+model.add( Dense(512, activation='sigmoid', input_shape=(784,)  ) ) # first layer takes input in the shape of a flat vector containing 784 values and its comprised of 512 nodes
+model.add( Dense(512, activation='sigmoid'  ) ) # the next layer is also 512 nodes
+model.add( Dense(num_classes, activation='softmax')) # the final layer outputs the soft max value based on the number of classes (num_classes)
 
-
+# view the model
+print(model.summary())
