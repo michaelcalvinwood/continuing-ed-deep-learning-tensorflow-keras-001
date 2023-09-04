@@ -5,12 +5,12 @@ import tensorflow
 from tensorflow.keras.datasets import mnist
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense 
-from tensorflow.keras.optimizers import SGD 
+from tensorflow.keras.optimizers.legacy import SGD 
 
 num_classes = 10 # we are going to train for digits 0 to 9. Therefore, we need 10 classes
 
 batch_size = 128 # 128 data points will be sent to the network at a time for batch processing
-epochs = 5 # the number of iterations (the number of times the data is fed to the machine for additional, incremental learning). You may want to use 20+ in production.
+epochs = 25 # the number of iterations (the number of times the data is fed to the machine for additional, incremental learning). You may want to use 20+ in production.
 
 # the data, shuffled and split between train and test sets
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -62,3 +62,19 @@ model.add( Dense(num_classes, activation='softmax')) # the final layer outputs t
 
 # view the model
 print(model.summary())
+
+# Compile the model 
+model.compile(loss='categorical_crossentropy', optimizer=SGD(), 
+              metrics=['accuracy']) # use SGD to opimize the model and use accuracy that measurement to optimize against for each iteration
+
+# let's perform the learning 
+history = model.fit( x_train, y_train, 
+           batch_size=batch_size,
+           epochs=epochs, 
+           verbose=1, 
+           validation_data=(x_test, y_test))
+
+# Let's evaluate the model 
+score = model.evaluate(x_test, y_test)
+
+print('The score', score[1])
