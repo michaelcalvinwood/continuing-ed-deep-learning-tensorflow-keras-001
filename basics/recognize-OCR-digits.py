@@ -20,3 +20,14 @@ print ('Data point shape', digits.data[0].shape, '\n\n')
 # overall data shape
 print ('Data shape', digits.data.shape, '\n\n')
 
+# last ten targets
+print ('Last ten targets', digits.data[-10:], '\n\n')
+
+# train a classifier
+from sklearn import svm # import the svm classifier
+clf = svm.SVC(gamma=0.001, C=100.) # create a classifier
+clf.fit(digits.data[:-1], digits.target[:-1]) # fit = learn; fit the model to the data points and corresponding data targets
+
+predicted_value = clf.predict(digits.data[-1:])
+
+print('Predicted value vs actual value',  "correct" if predicted_value == digits.target[-1:] else 'incorrect', predicted_value, digits.target[-1:],)
