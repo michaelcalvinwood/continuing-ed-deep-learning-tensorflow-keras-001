@@ -108,7 +108,7 @@ print('y_test.shape', y_test.shape)
 
 # X_train.shape (38298, 500) -- a 2 dimensional array
 # each of the 500 values is between 0 and 22
-# we will be converting each of these integer values to its one-hot representation: an array of 22 0's and a single 1 (e.g. 5 becomes [0, 0, 0, 0, 0, 1, 0, 0...] )
+# we will be converting each of these integer values to its one-hot vector representation: an array of 22 0's and a single 1 (e.g. 5 becomes [0, 0, 0, 0, 0, 1, 0, 0...] )
 # after the one-hot representation this results in a 3 dimensional array with the following shape (38298, 500, 23)
 
 # Create and Apply the Model
@@ -117,16 +117,16 @@ from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.optimizers import SGD
 
 num_amino_acids = 23 
-embedding_dims = 10 
+embedding_dims = 10 # in this example we are going to be using an embedding in lieu of a one-hot vector representation. This embedding with reduce the 23 dimensions down to 10.
 nb_epoch = 2
 batch_size = 2
 
 model = Sequential() 
 
-model.add(Embedding(num_amino_acids, embedding_dims, input_length=max_sequence_size  ))
-model.add(Flatten())
-model.add(Dense(25, activation='sigmoid'))
-model.add(Dense(1, activation='sigmoid'))
+model.add(Embedding(num_amino_acids, embedding_dims, input_length=max_sequence_size  )) # Output Shape (None, 500, 10) due to embedding in lieue of (None, 500, 23) if we chose one-hot
+model.add(Flatten()) # collapse the 500, 10 dimensions down to a single dimension. Output Shape is (None, 5000)
+model.add(Dense(25, activation='sigmoid')) # Output Shape is (None, 25)
+model.add(Dense(1, activation='sigmoid')) # we need to end with Output Shape (None, 1) (i.e. 1 dimension) because we want a YES/NO response
 
 model.summary()
 
